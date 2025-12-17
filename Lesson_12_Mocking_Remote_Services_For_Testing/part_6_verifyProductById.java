@@ -1,0 +1,1 @@
+verify(productClient).getProductById(anyLong());

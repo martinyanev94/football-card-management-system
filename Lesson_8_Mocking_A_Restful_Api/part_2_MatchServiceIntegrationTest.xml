@@ -1,0 +1,53 @@
+<dependency>
+    <groupId>com.github.tomakehurst</groupId>
+    <artifactId>wiremock-jre7</artifactId>
+    <version>2.31.0</version>
+    <scope>test</scope>
+</dependency>
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+@SpringJUnitConfig
+@SpringBootTest
+public class MatchServiceIntegrationTest {
+
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(8080); // Run on port 8080
+
+    MatchService matchService;
+
+    @BeforeEach
+    public void setUp() {
+        matchService = new MatchService(new RestTemplate());
+        wireMockServer.start();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        wireMockServer.stop();
+    }
+
+    @Test
+    public void testGetAllMatches() {
+        // Stubbing the WireMock server to return a predefined response
+        stubFor(get(urlEqualTo("/api/matches"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[{\"id\":1,\"homeTeam\":\"Team A\",\"awayTeam\":\"Team B\",\"score\":\"2-1\"}]")
+                        .withStatus(200)));
+
+        Match[] matches = matchService.getAllMatches();
+
+        assertNotNull(matches);
+        assertEquals(1, matches.length);
+        assertEquals("Team A", matches[0].getHomeTeam());
+    }
+}

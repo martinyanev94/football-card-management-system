@@ -1,0 +1,46 @@
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>4.0.0</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.web.client.RestTemplate;
+
+public class MatchServiceTest {
+
+    @Mock
+    private RestTemplate restTemplate;
+
+    @InjectMocks
+    private MatchService matchService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetAllMatches() {
+        Match[] mockMatches = { new Match(/* Populate with mock data */), new Match(/* Populate with mock data */) };
+        
+        when(restTemplate.getForObject(anyString(), eq(Match[].class))).thenReturn(mockMatches);
+        
+        Match[] matches = matchService.getAllMatches();
+        
+        assertNotNull(matches);
+        assertEquals(2, matches.length);  // Check that we received two matches
+    }
+}

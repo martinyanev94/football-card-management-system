@@ -1,0 +1,36 @@
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-circuitbreaker-reactor</artifactId>
+</dependency>
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Service
+public class MatchService {
+
+    private final FootballApiClient footballApiClient;
+    private final Resilience4JCircuitBreaker circuitBreaker;
+
+    @Autowired
+    public MatchService(FootballApiClient footballApiClient, Resilience4JCircuitBreaker circuitBreaker) {
+        this.footballApiClient = footballApiClient;
+        this.circuitBreaker = circuitBreaker;
+    }
+
+    @CircuitBreaker
+    public Match getMatchById(Long id) {
+        return circuitBreaker.run(() -> footballApiClient.getMatchById(id), throwable -> {
+            // Handle fallback logic here
+            return new Match(); // Return a default Match or null
+        });
+    }
+
+    @CircuitBreaker
+    public List<Match> getAllMatches() {
+        return circuitBreaker.run(() -> footballApiClient.getAllMatches(), throwable -> {
+            // Fallback logic
+            return Collections.emptyList(); // Return an empty list
+        });
+    }
+}

@@ -1,0 +1,8 @@
+springdoc:
+  swagger-ui:
+    title: Custom Swagger UI Title
+    description: Custom description for API
+    version: 1.0.0
+    logo: /path/to/logo.png
+    style:
+      primaryColor: '#2B3A42'

@@ -1,0 +1,35 @@
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>4.0.0</version>
+    <scope>test</scope>
+</dependency>
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
+
+public class ProductServiceTest {
+
+    @Mock
+    private ProductClient productClient;
+
+    @InjectMocks
+    private ProductService productService;
+
+    public ProductServiceTest() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testFindProductById() {
+        Product mockProduct = new Product(1L, "Laptop", 999.99);
+        when(productClient.getProductById(1L)).thenReturn(mockProduct);
+
+        Product result = productService.findProductById(1L);
+
+        assertEquals("Laptop", result.getName());
+        verify(productClient, times(1)).getProductById(1L);
+    }
+}

@@ -1,0 +1,28 @@
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableFeignClients
+public class ApiConsumerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ApiConsumerApplication.class, args);
+    }
+}
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "football-api", url = "http://localhost:8081")
+public interface FootballApiClient {
+
+    @GetMapping("/matches/{id}")
+    Match getMatchById(@PathVariable("id") Long id);
+    
+    @GetMapping("/matches")
+    List<Match> getAllMatches();
+}

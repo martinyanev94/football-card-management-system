@@ -1,0 +1,16 @@
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+@RestController
+@RequestMapping("/api/teams")
+public class TeamController {
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Team> getTeam(@PathVariable String id) {
+        // Logic to retrieve team information
+        Team team = teamService.findById(id);
+        return ResponseEntity.ok(team);
+    }
+}

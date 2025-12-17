@@ -1,0 +1,9 @@
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  info:
+    title: My API
+    description: API for managing users and their data
+    version: 1.0.0
